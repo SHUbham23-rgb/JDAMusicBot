@@ -1,7 +1,7 @@
 package com.discord.musicBot.commands.commandsList;
 
-import com.discord.musicBot.commands.CommandInterface;
 import com.discord.musicBot.audio.AudioUtils;
+import com.discord.musicBot.commands.CommandInterface;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +11,8 @@ public class Next implements CommandInterface {
     @Override
     public void commandInterpreter(List<String> args, @NotNull MessageReceivedEvent event) {
         AudioUtils.getInstance().next();
+
+        //System.out.println(Threads.incrementer());
     }
 
     @Override

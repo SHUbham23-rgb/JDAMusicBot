@@ -33,8 +33,9 @@ public class GuildMessageListener extends ListenerAdapter {
             System.out.println(deleteMessageThread.getName() + " " + "is intruppted");
         }
     }
-    public static void deleteMessagesInHistoryByBot(){
-        Thread botMessagesDeleteThread = new Thread(){
+
+    public static void deleteMessagesInHistoryByBot() {
+        Thread botMessagesDeleteThread = new Thread() {
             @Override
             public void run() {
                 try {
@@ -49,7 +50,36 @@ public class GuildMessageListener extends ListenerAdapter {
 
                     System.out.println(listRestAction.size());
                     Utils.getGuildMessageChannel().deleteMessages(messageList).queue();
-                }catch (Exception e){
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+
+
+            }
+        };
+        botMessagesDeleteThread.start();
+    }
+
+    public static void deleteBotMessage() {
+        Thread botMessagesDeleteThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    MessageHistory history = new MessageHistory(Utils.getGuildMessageChannel());
+                    List<Message> listRestAction = history.retrievePast(100).complete();
+                    List<Message> listRestAction1 = history.retrievePast(100).complete();
+                    List<Message> messageList = new ArrayList<>();
+                    List<Message> messageList1 = new ArrayList<>();
+                    for (int i = 0; i < listRestAction.size(); i++) {
+                        if (listRestAction.get(i).getAuthor().isBot()) {
+                            messageList.add(listRestAction.get(i));
+                            messageList1.add(listRestAction1.get(i));
+                        }
+                    }
+
+                    Utils.getGuildMessageChannel().deleteMessages(messageList).queue();
+                    Utils.getGuildMessageChannel().deleteMessages(messageList1).queue();
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
 
@@ -117,8 +147,8 @@ public class GuildMessageListener extends ListenerAdapter {
         }
 
  */
-        if (event.getMessage().getContentRaw().startsWith("!")){
-            Commandimpl.getINSTANCE().handel(event.getMessage().getContentRaw(),event);
+        if (event.getMessage().getContentRaw().startsWith("!")) {
+            Commandimpl.getINSTANCE().handel(event.getMessage().getContentRaw(), event);
         }
 
 

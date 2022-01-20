@@ -1,6 +1,6 @@
 package com.discord.musicBot.Utilities;
 
-import com.discord.musicBot.listners.GuildMessageListener;
+import com.discord.musicBot.listners.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -11,6 +11,10 @@ import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Utils {
     public static JDA build;
     static Utils INSTANCE;
@@ -19,8 +23,9 @@ public class Utils {
         @Override
         public void run() {
             try {
-                build = JDABuilder.createDefault("ODI5MjM1OTY5NTA0OTY4NzA0.YG1MLQ.W6NkG8CSz0IsShDieY3y0u8mBJs").build();
-                add();
+                Path path = Paths.get("C:\\Users\\Rick\\IdeaProjects\\JDABot\\sfc.txt");
+                build = JDABuilder.createDefault(Files.readString(path)).build();
+                add(build);
                 build.setAutoReconnect(true);
                 build.setRequestTimeoutRetry(true);
                 build.awaitReady();
@@ -38,11 +43,18 @@ public class Utils {
         return INSTANCE;
     }
 
-    public static void add() {
+    public static void add(JDA jda) {
         Thread adding = new Thread() {
             @Override
             public void run() {
-                build.addEventListener(new GuildMessageListener());
+                jda.addEventListener(new Ready());
+                jda.addEventListener(new GuildMessageListener());
+                jda.addEventListener(new Disconnect());
+                jda.addEventListener(new Reconnect());
+                jda.addEventListener(new ShutdownListener());
+                jda.addEventListener(new ButtonClicks());
+                jda.addEventListener(new ExceptionEvent());
+
                 System.out.println("Listners added");
             }
         };
@@ -52,6 +64,9 @@ public class Utils {
     public static MessageReceivedEvent getMessageRecievedEvent() {
         return MessageRecievedEvent;
     }
+
+
+
 
     public void setMessageRecievedEvent(MessageReceivedEvent event) {
         MessageRecievedEvent = event;
@@ -88,7 +103,7 @@ public class Utils {
         Thread pingingThread = new Thread("pingingThread"){
             @Override
             public void run() {
-                getMessageRecievedEvent().getGuildChannel().sendMessageEmbeds(builder.build()).complete();
+                getMessageRecievedEvent().getMessage().replyEmbeds(builder.build()).complete();
             }
         };
         pingingThread.start();

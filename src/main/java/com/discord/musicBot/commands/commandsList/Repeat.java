@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class Repreat implements CommandInterface {
+public class Repeat implements CommandInterface {
 
    public static boolean altFlag;
     @Override

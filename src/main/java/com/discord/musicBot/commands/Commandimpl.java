@@ -14,6 +14,9 @@ public class Commandimpl {
     static Map<String, CommandInterface> commandInterfaceMap = new HashMap<>();//for mapping with the enterd value
     private static Commandimpl INSTANCE;
     List<CommandInterface> commandInterfaceList = new ArrayList<>();
+    public void get(){
+
+    }
 
     public Commandimpl() {
         addCommand(new JoinCommand());
@@ -28,7 +31,8 @@ public class Commandimpl {
         addCommand(new GetPosition());
         addCommand(new Seek());
         addCommand(new AudioResamplingQuality());
-        addCommand(new Repreat());
+        addCommand(new Repeat());
+        addCommand(new Incrementor());
 
 
     }
@@ -41,19 +45,33 @@ public class Commandimpl {
     }
 
     public void handel(String message, @NotNull MessageReceivedEvent event) {
-        System.out.println("Insaide interface handle");
-        final String[] args1 = message.replaceFirst(
-                "!", "").split("\s+");
-        final String invoke = args1[0].toLowerCase();
-        if (commandInterfaceMap.containsKey(invoke)) {
-            commandInterfaceMap.get(invoke).commandInterpreter(
-                    Arrays.asList(args1).subList(1, args1.length),event);
+        Thread messageHandlerThread = new Thread("messageHandlerThread"){
+            @Override
+            public void run() {
+                System.out.println("Insaide interface handle");
+                final String[] args1 = message.replaceFirst(
+                        "!", "").split("\s+");
+                final String invoke = args1[0].toLowerCase();
+                if (commandInterfaceMap.containsKey(invoke)) {
+                    commandInterfaceMap.get(invoke).commandInterpreter(
+                            Arrays.asList(args1).subList(1, args1.length),event);
+
+            }
         }
+
+        };
+        messageHandlerThread.start();
     }
 
     public void addCommand(CommandInterface commandInterface) {
-        System.out.println("In add command " + commandInterface.getCommand());
-        commandInterfaceMap.put(commandInterface.getCommand(), commandInterface);
+        Thread commandMapperThread = new Thread("commandMapperThread"){
+            @Override
+            public void run() {
+                System.out.println("In add command " + commandInterface.getCommand());
+                commandInterfaceMap.put(commandInterface.getCommand(), commandInterface);
+            }
+        };
+       commandMapperThread.start();
     }
     /*
      public void addCommand(CommandInterface commandInterface){

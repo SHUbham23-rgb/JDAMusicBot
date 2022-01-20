@@ -1,6 +1,7 @@
 package com;
 
 import com.discord.musicBot.Utilities.Utils;
+import org.apache.commons.lang3.ThreadUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
@@ -10,6 +11,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) {
@@ -22,9 +25,9 @@ public class Main {
             System.out.println("Internet not available");
         }
 
-
-
+        getRunningThreads();
     }
+
 
     public static boolean isConnectedToInternet(){
         boolean[] isConnected = new boolean[1];
@@ -56,6 +59,24 @@ isConnected[0]=true;
         }
 
     }
+    public static void getRunningThreads(){
+        for (Thread t : ThreadUtils.getAllThreads()) {
+            System.out.println(t.getName() + ", " + t.isDaemon());
+        }
+    }
+    public void runTasks(){
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+              System.gc();
+                }
+            };
+        timer.scheduleAtFixedRate(timerTask,100,10000);
+        };
+
+
+
 
     public static void printResults(@NotNull Process process) throws IOException {
         Scanner reader = new Scanner(new InputStreamReader(process.getInputStream()));

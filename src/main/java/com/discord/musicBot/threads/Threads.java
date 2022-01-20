@@ -54,7 +54,8 @@ public class Threads {
         };
         voiceLeave.start();
     }
-    public static boolean isIsConnected(){
+
+    public static boolean isIsConnected() {
         AudioChannel connectedChannel = Utils.getMessageRecievedEvent().getMember().getVoiceState().getChannel();
         AudioManager audioManager = Utils.getMessageRecievedEvent().getGuild().getAudioManager();
         if (connectedChannel == null) {
@@ -63,17 +64,44 @@ public class Threads {
 
         } else if (audioManager.isConnected()) {
             System.out.println("already connected");
-           return true;
+            return true;
         } else if (audioManager.isConnected() == false) {
 
             return true;
-        }else {
+        } else {
             return false;
         }
     }
-    public static void getCommandClasses(){
+
+    public static void getCommandClasses() {
         List<CommandInterface> commandInterfaceList = new ArrayList<>();
 
+    }
+   static int i = 0;
+    public static int incrementer(){
+       Thread cont =new Thread(){
+           @Override
+           public void run() {
+               i++;
+           }
+       };
+cont.start();
+return i;
+    }
+
+    public static int decrementer(int j) {
+                j--;
+        return j;
+    }
+
+    public void reset(){
+        Thread resetThread = new Thread(){
+            @Override
+            public void run() {
+                i=0;
+
+            }
+        };
     }
 
 }

@@ -33,6 +33,9 @@ public class AudioUtils {
         audioPlayer = audioPlayerManager.createPlayer();
         addListener(audioPlayer);
     }
+    public static AudioPlayer getseperatePlayerinstsance(){
+        return audioPlayerManager.createPlayer();
+    }
 
     public static AudioUtils getInstance() {
         if (Instance == null) {
@@ -66,7 +69,9 @@ public class AudioUtils {
     }
 
     public void play(String s) {
-
+        Thread loaderThread = new Thread(){
+            @Override
+            public void run() {
                 try {
                     audioPlayerManager.loadItem(isUrl(s), new ResultHandler(audioPlayer));
                     System.out.println("loading item " + isUrl(s));
@@ -76,6 +81,9 @@ public class AudioUtils {
                 }
                 //  System.out.println("i'm from else part");
 
+            }
+        };
+loaderThread.start();
     }
 
 
@@ -132,7 +140,7 @@ public class AudioUtils {
 
     public void seek(int inSecs) {
         long miliSec = inSecs * 1000;
-        audioPlayer.getPlayingTrack().setPosition(inSecs);//in milliseconds
+        audioPlayer.getPlayingTrack().setPosition(miliSec);//in milliseconds
 
         // GuildMusicManager.audioPlayer.getPlayingTrack().setPosition(miliSec);
         //   ping(String.valueOf(GuildMusicManager.audioPlayer.getPlayingTrack().getPosition()));
